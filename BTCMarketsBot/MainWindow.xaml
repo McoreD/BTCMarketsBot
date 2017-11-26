@@ -1,12 +1,40 @@
-﻿<Window x:Class="BTCMarketsBot.MainWindow"
+﻿<Window x:Name="MainWindow1" x:Class="BTCMarketsBot.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BTCMarketsBot"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" Loaded="MainWindow_Loaded">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <ComboBox Grid.Row="0" Grid.Column="0" x:Name="cboBuySell" Margin="5" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5">BTC</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtUnit1" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+        <Button Grid.Row="2" Grid.Column="0" Margin="5">Balance</Button>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="5"></TextBox>
+
+        <Button Grid.Row="3" Grid.Column="0" Margin="5" x:Name="btnGetMarketTick"  Click="btnGetMarketTick_Click">Market</Button>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="5" x:Name="txtMartetData"></TextBox>
     </Grid>
 </Window>
