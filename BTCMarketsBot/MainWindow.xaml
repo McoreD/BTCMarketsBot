@@ -13,28 +13,56 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Loaded="MainWindow_Loaded">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+        Title="BTCMarkets Bot" Height="480" Width="600" Loaded="MainWindow_Loaded" WindowStartupLocation="CenterScreen">
 
-        <ComboBox Grid.Row="0" Grid.Column="0" x:Name="cboBuySell" Margin="5" />
+    <StackPanel  Orientation="Vertical" Margin="5">
 
-        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5">BTC</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtUnit1" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}">Configuration</TextBlock>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Buy/Sell:</TextBlock>
+            <ComboBox  x:Name="cboBuySell" Margin="5" MinWidth="100" DropDownClosed="cboBuySell_DropDownClosed" />
+        </StackPanel>
 
-        <Button Grid.Row="2" Grid.Column="0" Margin="5">Balance</Button>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="5"></TextBox>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Interval:</TextBlock>
+            <ComboBox x:Name="cboIntervals" Margin="5" MinWidth="100" HorizontalContentAlignment="Right" />
+            <TextBlock x:Name="lblInterval" VerticalAlignment="Center" Margin="5">minutes</TextBlock>
+        </StackPanel>
 
-        <Button Grid.Row="3" Grid.Column="0" Margin="5" x:Name="btnGetMarketTick"  Click="btnGetMarketTick_Click">Market</Button>
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="5" x:Name="txtMartetData"></TextBox>
-    </Grid>
+        <StackPanel  Orientation="Horizontal" Margin="5">
+            <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Profit margin:</TextBlock>
+            <ComboBox x:Name="cboProfitMargin" Margin="5" MinWidth="100" HorizontalContentAlignment="Right"></ComboBox>
+            <TextBlock x:Name="lblProfit" VerticalAlignment="Center" Margin="5">%</TextBlock>
+        </StackPanel>
+
+        <UniformGrid Columns="2" Margin="5">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}">Buy</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Volume:</TextBlock>
+                    <TextBox x:Name="txtVolume1" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="lblUnit1" VerticalAlignment="Center" Margin="5">BCH</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Price:</TextBlock>
+                    <TextBox x:Name="txtPrice1" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="lblUnit2" VerticalAlignment="Center" Margin="5">BTC</TextBlock>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}">Sell</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Volume:</TextBlock>
+                    <TextBox x:Name="txtVolume2" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="lblUnit2_2" VerticalAlignment="Center" Margin="5">BTC</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Price:</TextBlock>
+                    <TextBox x:Name="txtPrice2" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="lblUnit1_1" VerticalAlignment="Center" Margin="5">BCH</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </UniformGrid>
+    </StackPanel>
 </Window>

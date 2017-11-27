@@ -11,10 +11,9 @@ namespace BTCMarketsBot
 {
     public class BTCMarketsHelper
     {
-        internal static string GetMarketTick()
+        internal static MarketTickData GetMarketTick()
         {
-            MarketTickData data = JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
-            return $"{data.bestAsk} {data.currency} = 1 {data.instrument}";
+            return JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
         }
 
         /// <summary>

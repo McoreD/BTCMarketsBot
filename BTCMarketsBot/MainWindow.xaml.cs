@@ -1,6 +1,7 @@
 ﻿using ShareX.HelpersLib;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,15 +22,33 @@ namespace BTCMarketsBot
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool IsGuiReady = false;
+        private ObservableCollection<int> listProfitMargins = new ObservableCollection<int>();
+        private ObservableCollection<int> listIntervalsBuySell = new ObservableCollection<int>();
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Load collections
+            for (int i = 5; i <= 30; i = i + 5)
+            {
+                listProfitMargins.Add(i);
+                listIntervalsBuySell.Add(i);
+            }
 
             // Load controls
             foreach (ExchangeType item in Helpers.GetEnums<ExchangeType>())
             {
                 cboBuySell.Items.Add(item.GetDescription());
             }
+            cboBuySell.SelectedIndex = 0;
+
+            cboProfitMargin.ItemsSource = listProfitMargins;
+            cboProfitMargin.SelectedIndex = 0;
+
+            cboIntervals.ItemsSource = listIntervalsBuySell;
+            cboIntervals.SelectedIndex = 5;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -45,11 +64,29 @@ namespace BTCMarketsBot
                     sr.Close();
                 }
             }
+
+            IsGuiReady = true;
         }
 
-        private void btnGetMarketTick_Click(object sender, RoutedEventArgs e)
+        private void UpdateTitle()
         {
-            txtMartetData.Text = BTCMarketsHelper.GetMarketTick();
+            MarketTickData data = BTCMarketsHelper.GetMarketTick();
+            Title = $"BTCMarkets Bot | {data.bestAsk} {data.currency} = 1 {data.instrument}";
+        }
+
+        private void cboBuySell_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+
+        private void cboBuySell_DropDownClosed(object sender, EventArgs e)
+        {
+            if (IsGuiReady)
+            {
+                string txtUnit1 = cboBuySell.Text.Split('/')[0];
+                string txtUnit2 = cboBuySell.Text.Split('/')[1];
+                lblUnit1.Text = lblUnit1_1.Text = txtUnit1;
+                lblUnit2.Text = lblUnit2_2.Text = txtUnit2;
+            }
         }
     }
 }
