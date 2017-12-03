@@ -90,10 +90,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="APICallLimiter.cs" />
     <Compile Include="ConversionHelper.cs" />
     <Compile Include="RequestHelper.cs" />
     <Compile Include="SecurityHelper.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TradingHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

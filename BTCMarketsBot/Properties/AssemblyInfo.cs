@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BTCMarketsBot")]
-[assembly: AssemblyDescription("A humble bot for BTCMarkets")]
+[assembly: AssemblyTitle("BTC Markets Bot")]
+[assembly: AssemblyDescription("A humble bot for BTC Markets")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BTCMarketsBot")]
+[assembly: AssemblyProduct("BTC Markets Bot")]
 [assembly: AssemblyCopyright("Copyright © 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

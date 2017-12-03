@@ -14,6 +14,8 @@ namespace BTCMarketsBot
 
             var secondsSinceEpoch = (long)(DateTime.UtcNow - unixTime).TotalMilliseconds;
 
+            APICallLimiter.QueueRequest(secondsSinceEpoch);
+
             var nonce = secondsSinceEpoch.ToString();
 
             return nonce;

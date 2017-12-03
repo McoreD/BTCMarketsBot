@@ -11,9 +11,14 @@ namespace BTCMarketsBot
 {
     public class BTCMarketsHelper
     {
-        internal static MarketTickData GetMarketTick()
+        public static string ExchangeType { get; set; }
+        public static int ProfitMargin { get; set; }
+
+        internal static MarketTickData MarketTickData { get; set; }
+
+        internal static void GetMarketTick()
         {
-            return JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
+            MarketTickData = JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
         }
 
         /// <summary>

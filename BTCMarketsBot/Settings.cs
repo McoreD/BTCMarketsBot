@@ -9,6 +9,12 @@ namespace BTCMarketsBot
 {
     public class Settings : SettingsBase<Settings>
     {
-        public string ExchangeType { get; set; }
+        public int ExchangeTypeIndex { get; set; } = 0;
+
+        public int ProfitMarginIndex { get; set; } = 1;
+
+        public int IntervalIndex { get; set; } = 0;
+
+        public double TradingFee { get; set; } = 0.22;
     }
 }
