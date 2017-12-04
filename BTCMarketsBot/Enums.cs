@@ -9,6 +9,9 @@ namespace BTCMarketsBot
 {
     public enum ExchangeType
     {
+        [Description("BTC/AUD")]
+        BTC_AUD,
+
         [Description("BCH/BTC")]
         BCH_BTC,
 

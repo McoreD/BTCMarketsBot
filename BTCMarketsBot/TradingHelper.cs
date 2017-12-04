@@ -8,9 +8,7 @@ namespace BTCMarketsBot
 {
     public static class TradingHelper
     {
-        public static double BuyVolumeInput;
-
-        public static TradingData GetTradingData()
+        public static TradingData GetTradingData(double buyVolume)
         {
             MarketTickData marketData = BTCMarketsHelper.MarketTickData;
 
@@ -18,7 +16,7 @@ namespace BTCMarketsBot
 
             double profitMultiplier = BTCMarketsHelper.ProfitMargin / 100.0 + 1.0;
 
-            tradingData.BuyVolume = BuyVolumeInput;
+            tradingData.BuyVolume = buyVolume;
 
             double buyPrice;
             double.TryParse(marketData.bestAsk, out buyPrice);
@@ -27,11 +25,11 @@ namespace BTCMarketsBot
 
             double tradingFees = App.Settings.TradingFee / 100.0 + 1;
 
-            double spendTotal = tradingData.BuyVolume * buyPrice * tradingFees;
+            tradingData.SpendTotal = tradingData.BuyVolume * buyPrice * tradingFees;
 
             tradingData.SellPrice = Math.Round(buyPrice * profitMultiplier, 8);
 
-            tradingData.SellVolume = Math.Round(spendTotal / tradingData.SellPrice, 8);
+            tradingData.SellVolume = Math.Round(tradingData.SpendTotal / tradingData.SellPrice, 8);
 
             return tradingData;
         }
@@ -43,5 +41,7 @@ namespace BTCMarketsBot
         public double BuyPrice { get; set; }
         public double SellVolume { get; set; }
         public double SellPrice { get; set; }
+
+        public double SpendTotal { get; set; }
     }
 }

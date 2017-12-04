@@ -32,7 +32,8 @@
         <StackPanel  Orientation="Horizontal" Margin="5">
             <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Profit margin:</TextBlock>
             <ComboBox x:Name="cboProfitMargin" Margin="5" MinWidth="100" HorizontalContentAlignment="Right" DropDownClosed="cboProfitMargin_DropDownClosed"></ComboBox>
-            <TextBlock x:Name="lblProfit" VerticalAlignment="Center" Margin="5">%</TextBlock>
+            <TextBlock x:Name="lblProfit" VerticalAlignment="Center" Margin="5" MinWidth="50">%</TextBlock>
+            <CheckBox x:Name="chkMarginSplit" >Split margin between Buy and Sell</CheckBox>
         </StackPanel>
 
         <UniformGrid Columns="2">
@@ -48,6 +49,11 @@
                     <TextBox x:Name="txtPrice1" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <TextBlock x:Name="lblUnit2" VerticalAlignment="Center" Margin="5">BTC</TextBlock>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5" MinWidth="100">Spend total:</TextBlock>
+                    <TextBlock x:Name="lblSpendTotal" Margin="5"  MinWidth="100" TextAlignment="Right" />
+                    <TextBlock x:Name="lblUnit2_1" VerticalAlignment="Center" Margin="5">BTC</TextBlock>
+                </StackPanel>
                 <Button x:Name="btnBuy" Margin="5">Buy</Button>
             </StackPanel>
 
@@ -62,6 +68,10 @@
                     <TextBlock VerticalAlignment="Center" Margin="5" MinWidth="100">Price:</TextBlock>
                     <TextBox x:Name="txtPrice2" VerticalContentAlignment="Center" Margin="5" HorizontalContentAlignment="Right"  MinWidth="100" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <TextBlock x:Name="lblUnit2_2" VerticalAlignment="Center" Margin="5">BCH</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5" MinWidth="100">Receive total:</TextBlock>
+                    <TextBlock x:Name="lblReceiveTotal" Margin="5" MinWidth="100"></TextBlock>
                 </StackPanel>
                 <Button x:Name="btnSell" Margin="5">Sell</Button>
             </StackPanel>

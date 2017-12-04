@@ -66,9 +66,10 @@ namespace BTCMarketsBot
 
         private void MarketTickTimer_Tick(object sender, EventArgs e)
         {
+            Random rnd = new Random();
+            marketTickTimer.Interval = new TimeSpan(0, 0, rnd.Next(10, 30));
             TaskEx.Run(() => BTCMarketsHelper.GetMarketTick());
 
-            IsGuiReady = true;
             UpdateTitle();
         }
 
@@ -86,7 +87,11 @@ namespace BTCMarketsBot
                 }
             }
 
-            TaskEx.Run(() => BTCMarketsHelper.GetMarketTick());
+            TaskEx.Run(() =>
+            {
+                BTCMarketsHelper.GetMarketTick();
+                IsGuiReady = true;
+            });
 
             UpdateGuiControls();
         }
@@ -102,28 +107,29 @@ namespace BTCMarketsBot
 
         private void UpdateGuiControls()
         {
+            BTCMarketsHelper.ProfitMargin = listProfitMargins[cboProfitMargin.SelectedIndex];
+            BTCMarketsHelper.ExchangeType = cboBuySell.Text;
+
+            string txtUnit1 = cboBuySell.Text.Split('/')[0];
+            string txtUnit2 = cboBuySell.Text.Split('/')[1];
+            lblUnit1.Text = lblUnit1_1.Text = txtUnit1;
+            lblUnit2.Text = lblUnit2_1.Text = lblUnit2_2.Text = txtUnit2;
+            btnBuy.Content = lblBuy.Text = $"Buy {txtUnit1}";
+            btnSell.Content = lblSell.Text = $"Sell {txtUnit2}";
+
             if (IsGuiReady)
             {
-                BTCMarketsHelper.ProfitMargin = listProfitMargins[cboProfitMargin.SelectedIndex];
-                BTCMarketsHelper.ExchangeType = cboBuySell.Text;
-
-                string txtUnit1 = cboBuySell.Text.Split('/')[0];
-                string txtUnit2 = cboBuySell.Text.Split('/')[1];
-                lblUnit1.Text = lblUnit1_1.Text = txtUnit1;
-                lblUnit2.Text = lblUnit2_2.Text = txtUnit2;
-                btnBuy.Content = lblBuy.Text = $"Buy {txtUnit1}";
-                btnSell.Content = lblSell.Text = $"Sell {txtUnit2}";
-
-                TradingData tradingData = TradingHelper.GetTradingData();
-
                 if (!string.IsNullOrEmpty(txtVolume1.Text))
                 {
-                    double.TryParse(txtVolume1.Text, out TradingHelper.BuyVolumeInput);
+                    double buyVolume;
+                    double.TryParse(txtVolume1.Text, out buyVolume);
 
-                    txtPrice1.Text = tradingData.BuyPrice.ToString("0.########");
+                    TradingData tradingData = TradingHelper.GetTradingData(buyVolume);
+                    txtPrice1.Text = tradingData.BuyPrice.ToDecimalString(8);
+                    txtVolume2.Text = tradingData.SellVolume.ToDecimalString(8);
+                    txtPrice2.Text = tradingData.SellPrice.ToDecimalString(8);
 
-                    txtVolume2.Text = tradingData.SellVolume.ToString("0.########");
-                    txtPrice2.Text = tradingData.SellPrice.ToString("0.########");
+                    lblSpendTotal.Text = tradingData.SpendTotal.ToDecimalString(2);
                 }
 
                 UpdateTitle();
