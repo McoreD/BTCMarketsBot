@@ -21,6 +21,11 @@ namespace BTCMarketsBot
             MarketTickData = JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
         }
 
+        public static MarketTickData GetMarketTick(string pair)
+        {
+            return JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest($"/market/{pair}/tick", null));
+        }
+
         /// <summary>
         ///     This method constructs the core parts used for the request to BTC markets
         /// </summary>

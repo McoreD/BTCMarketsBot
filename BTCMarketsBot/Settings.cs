@@ -13,6 +13,8 @@ namespace BTCMarketsBot
 
         public int ProfitMarginIndex { get; set; } = 1;
 
+        public bool ProfitMarginSplit { get; set; } = true;
+
         public int IntervalIndex { get; set; } = 0;
 
         public double TradingFee { get; set; } = 0.22;

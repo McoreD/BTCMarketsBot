@@ -8,18 +8,21 @@ namespace BTCMarketsBot
 {
     public static class TradingHelper
     {
-        public static TradingData GetTradingData(double buyVolume)
+        public static TradingData GetTradingData(MarketTickData marketData, double buyVolume)
         {
-            MarketTickData marketData = BTCMarketsHelper.MarketTickData;
-
             TradingData tradingData = new TradingData();
 
-            double profitMultiplier = BTCMarketsHelper.ProfitMargin / 100.0 + 1.0;
+            double profitMargin = App.Settings.ProfitMarginSplit ? BTCMarketsHelper.ProfitMargin / 2 : BTCMarketsHelper.ProfitMargin;
+
+            double profitMultiplier = profitMargin / 100.0 + 1.0;
 
             tradingData.BuyVolume = buyVolume;
 
             double buyPrice;
+
             double.TryParse(marketData.bestAsk, out buyPrice);
+
+            buyPrice = App.Settings.ProfitMarginSplit ? buyPrice * (1 - profitMargin / 100.0) : buyPrice;
 
             tradingData.BuyPrice = buyPrice;
 
