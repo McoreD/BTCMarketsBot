@@ -53,7 +53,7 @@ namespace BTCMarketsBot
 
         public static string BuildDefaultOrderString()
         {
-            return BuildOrderString("AUD", "BTC", 10, "1");
+            return BuildOrderString("BTC", "ETH", 10, "1");
         }
 
         /// <summary>

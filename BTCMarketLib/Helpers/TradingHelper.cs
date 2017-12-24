@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShareX.HelpersLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,24 @@ namespace BTCMarketsBot
 {
     public static class TradingHelper
     {
-        public static TradingData GetTradingData(MarketTickData marketData, double buyVolume)
+        /// <summary>
+        /// Trading data with buy volume calculated as maximum
+        /// </summary>
+        /// <param name="marketData"></param>
+        /// <returns></returns>
+        public static TradingData GetTradingData(MarketTickData marketData)
+        {
+            double balance = BTCMarketsHelper.RetrieveAccountBalance(marketData.currency) * 0.4; // buying currency
+
+            TradingFeeData feeData = JsonHelpers.DeserializeFromString<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
+            double tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData);
+
+            double buyVolume = Math.Round((balance / 100000000.0) / (marketData.bestAsk * tradingFeeMultiplier), 8);
+
+            return GetTradingData(marketData, buyVolume, feeData);
+        }
+
+        public static TradingData GetTradingData(MarketTickData marketData, double buyVolume, TradingFeeData feeData = null)
         {
             TradingData tradingData = new TradingData();
 
@@ -18,17 +36,18 @@ namespace BTCMarketsBot
 
             tradingData.BuyVolume = buyVolume;
 
-            double buyPrice;
+            double buyPrice = marketData.bestAsk;
 
-            double.TryParse(marketData.bestAsk, out buyPrice);
-
-            buyPrice = Bot.Settings.ProfitMarginSplit ? buyPrice * (1 - profitMargin / 100.0) : buyPrice;
+            buyPrice = Math.Round(Bot.Settings.ProfitMarginSplit ? buyPrice * (1 - profitMargin / 100.0) : buyPrice, 8);
 
             tradingData.BuyPrice = buyPrice;
 
-            double tradingFees = Bot.Settings.TradingFee / 100.0 + 1;
+            if (feeData == null)
+                feeData = JsonHelpers.DeserializeFromString<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
 
-            tradingData.SpendTotal = tradingData.BuyVolume * buyPrice * tradingFees;
+            double tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData); // Bot.Settings.TradingFee / 100.0 + 1;
+
+            tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * buyPrice * tradingFeeMultiplier, 8);
 
             tradingData.SellPrice = Math.Round(buyPrice * profitMultiplier, 8);
 

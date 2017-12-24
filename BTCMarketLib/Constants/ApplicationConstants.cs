@@ -13,5 +13,7 @@ namespace BTCMarketsBot
         public static string PRIVATE_KEY { get; set; }
 
         public const string BASEURL = "https://api.btcmarkets.net";
+
+        public const double NUMERIC_MULTIPLIER = 100000000.0;
     }
 }

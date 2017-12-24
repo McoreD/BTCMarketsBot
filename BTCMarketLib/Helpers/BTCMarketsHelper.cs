@@ -17,6 +17,8 @@ namespace BTCMarketsBot
 
         public static MarketTickData MarketTickData { get; set; }
 
+        #region Market Methods
+
         public static void GetMarketTick()
         {
             MarketTickData = JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
@@ -26,6 +28,138 @@ namespace BTCMarketsBot
         {
             return JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest($"/market/{pair}/tick", null));
         }
+
+        #endregion Market Methods
+
+        #region Account Methods
+
+        /// <summary>
+        /// GET: Returns the current account balance of all Currency and BTC/LTC in your Account
+        /// </summary>
+        /// <returns>[{"balance":1000000000,"pendingFunds":0,"currency":"AUD"},{"balance":1000000000,"pendingFunds":0,"currency":"BTC"},{"balance":1000000000,"pendingFunds":0,"currency":"LTC"}]</returns>
+        public static double RetrieveAccountBalance(string currency)
+        {
+            BalanceData items = new BalanceData(JsonHelpers.DeserializeFromString<BalanceItem[]>(SendRequest(MethodConstants.ACCOUNT_BALANCE_PATH, null)));
+
+            return items.GetAvailableBalance(currency);
+        }
+
+        #endregion Account Methods
+
+        #region Order History Methods
+
+        /// <summary>
+        /// POST: Requests Order History capped at a supplied limit, and for a specified timestamp (in ms)
+        /// </summary>
+        /// <param name="currency">AUD, USD</param>
+        /// <param name="instrument">BTC/LTC etc</param>
+        /// <param name="limit"># of Orders to return</param>
+        /// <param name="since">Timestamp in ms to filter results</param>
+        /// <returns>{"success":true,"errorCode":null,"errorMessage":null,"orders":[{"id":1003245675,"currency":"AUD","instrument":"BTC","orderSide":"Bid","ordertype":"Limit","creationTime":1378862733366,"status":"Placed","errorMessage":null,"price":13000000000,"volume":10000000,"openVolume":10000000,"clientRequestId":null,"trades":[]},{"id":4345675,"currency":"AUD","instrument":"BTC","orderSide":"Ask","ordertype":"Limit","creationTime":1378636912705,"status":"Fully Matched","errorMessage":null,"price":13000000000,"volume":10000000,"openVolume":0,"clientRequestId":null,"trades":[{"id":5345677,"creationTime":1378636913151,"description":null,"price":13000000000,"volume":10000000,"fee":100000}]}]}</returns>
+        public static string OrderHistory(string currency, string instrument, int limit, string since)
+        {
+            return SendRequest(MethodConstants.ORDER_HISTORY_PATH, RequestHelper.BuildOrderString(currency, instrument, limit, since));
+        }
+
+        /// <summary>
+        /// POST: Requests Order History but defaults in a timestamp of all and a limit of 10 orders
+        /// </summary>
+        /// <returns>{"success":true,"errorCode":null,"errorMessage":null,"orders":[{"id":1003245675,"currency":"AUD","instrument":"BTC","orderSide":"Bid","ordertype":"Limit","creationTime":1378862733366,"status":"Placed","errorMessage":null,"price":13000000000,"volume":10000000,"openVolume":10000000,"clientRequestId":null,"trades":[]},{"id":4345675,"currency":"AUD","instrument":"BTC","orderSide":"Ask","ordertype":"Limit","creationTime":1378636912705,"status":"Fully Matched","errorMessage":null,"price":13000000000,"volume":10000000,"openVolume":0,"clientRequestId":null,"trades":[{"id":5345677,"creationTime":1378636913151,"description":null,"price":13000000000,"volume":10000000,"fee":100000}]}]}</returns>
+        public static string OrderHistory()
+        {
+            return SendRequest(MethodConstants.ORDER_HISTORY_PATH, RequestHelper.BuildDefaultOrderString());
+        }
+
+        /// <summary>
+        /// POST: Requests Open Order History but defaults in a timestamp of all and a limit of 10 on all orders
+        /// </summary>
+        /// <param name="currency">AUD, USD</param>
+        /// <param name="instrument">BTC/LTC etc</param>
+        /// <param name="limit"># of Orders to return</param>
+        /// <param name="since">Timestamp in ms to filter results</param>
+        /// <returns>As per Order History response</returns>
+        public static string OrderOpen(string currency, string instrument, int limit, string since)
+        {
+            return SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildOrderString(currency, instrument, limit, since));
+        }
+
+        /// <summary>
+        /// POST: Requests Open Order History but defaults in a timestamp of all and a limit of 10 on all orders
+        /// </summary>
+        /// <returns>As per Order History response</returns>
+        public static OrderHistoryData OrderOpen()
+        {
+            return JsonHelpers.DeserializeFromString<OrderHistoryData>(SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildDefaultOrderString()));
+        }
+
+        /// <summary>
+        /// POST: Requests All Trade History capped at a supplied limit, and for a specified timestamp (in ms)
+        /// </summary>
+        /// <param name="currency">AUD, USD</param>
+        /// <param name="instrument">BTC/LTC etc</param>
+        /// <param name="limit"># of Orders to return</param>
+        /// <param name="since">Timestamp in ms to filter results</param>
+        /// <returns></returns>
+        public static string OrderTradeHistory(string currency, string instrument, int limit, string since)
+        {
+            return SendRequest(MethodConstants.ORDER_TRADE_HISTORY_PATH,
+                RequestHelper.BuildOrderString(currency, instrument, limit, since));
+        }
+
+        /// <summary>
+        /// POST: Requests All Trade History but defaults in a timestamp of all and a limit of 10 on all orders
+        /// </summary>
+        /// <returns></returns>
+        public static string OrderTradeHistory()
+        {
+            return SendRequest(MethodConstants.ORDER_TRADE_HISTORY_PATH, RequestHelper.BuildDefaultOrderString());
+        }
+
+        #endregion Order History Methods
+
+        #region Order Manipulation Methods
+
+        /// <summary>
+        /// POST: Gets all the Detail for an existing order in BTC Markets
+        /// </summary>
+        /// <param name="orderID">The unique ID of the orders details you want to view. Extend this to an array for multiple.</param>
+        /// <returns>{"success":true,"errorCode":null,"errorMessage":null,"orders":[{"id":54345259,"currency":"AUD","instrument":"BTC","orderSide":"Ask","ordertype":"Limit","creationTime":1449022730366,"status":"Placed","errorMessage":null,"price":1000000000000,"volume":100000000,"openVolume":100000000,"clientRequestId":null,"trades":[]}]}</returns>
+        public static string FetchOpenOrderDetail(string orderID)
+        {
+            return SendRequest(MethodConstants.ORDER_OPEN_DETAIL, RequestHelper.BuildOrderRequestFromID(orderID));
+        }
+
+        /// <summary>
+        ///POST: Will Execute a new Order on BTC Markets
+        /// </summary>
+        /// <param name="currency">AUD, USD</param>
+        /// <param name="instrument">BTC/LTC etc</param>
+        /// <param name="price">How many coins to Buy or Sell</param>
+        /// <param name="volume"># of Coins</param>
+        /// <param name="orderSide">Bid (Buy) or Ask (Sell)</param>
+        /// <param name="orderType">Limit or Market</param>
+        /// <returns>Success: {"success":true,"errorCode":null,"errorMessage":null,"id":100,"clientRequestId":"abc-cdf-1000"}
+        ///          Error: {"success":false,"errorCode":3,"errorMessage":"Invalid argument.","id":0,"clientRequestId":"abc-cdf-1000"}
+        /// </returns>
+        public static string CreateNewOrder(string currency, string instrument, long price, int volume,
+            string orderSide, string orderType)
+        {
+            return SendRequest(
+                MethodConstants.ORDER_CREATE_PATH,
+                RequestHelper.BuildNewOrderString(currency, instrument, price, volume, orderSide, orderType));
+        }
+
+        /// <summary>
+        /// POST: Will Cancel an Order given a specific ID (multiple not currently supported but will be extended)
+        /// </summary>
+        /// <param name="orderID">The specific Order ID to cancel</param>
+        /// <returns>{"success":true,"errorCode":null,"errorMessage":null,"responses":[{"success":false,"errorCode":3,"errorMessage":"order does not exist.","id":6840125478}]}</returns>
+        public static string CancelOpenOrder(string orderID)
+        {
+            return SendRequest(MethodConstants.ORDER_OPEN_CANCEL, RequestHelper.BuildOrderRequestFromID(orderID));
+        }
+
+        #endregion Order Manipulation Methods
 
         /// <summary>
         ///     This method constructs the core parts used for the request to BTC markets
@@ -40,6 +174,7 @@ namespace BTCMarketsBot
             {
                 //get the epoch timestamp to be used as the nonce
                 var timestamp = ConversionHelper.ReturnCurrentTimeStampInMilliseconds();
+                Console.WriteLine(action);
 
                 // create the string that needs to be signed
                 var stringToSign = BuildStringToSign(action, postData, timestamp);
@@ -130,24 +265,5 @@ namespace BTCMarketsBot
 
             return btcRequest;
         }
-    }
-
-    public class MarketTickData
-    {
-        public string bestbid { get; set; }
-        public string bestAsk { get; set; }
-        public string lastPrice { get; set; }
-        public string currency { get; set; }
-        public string instrument { get; set; }
-        public string timestamp { get; set; }
-    }
-
-    public class MartketOrderBookData
-    {
-        public string currency { get; set; }
-        public string instrument { get; set; }
-        public string timestamp { get; set; }
-        public string[] asks { get; set; }
-        public string[] bids { get; set; }
     }
 }

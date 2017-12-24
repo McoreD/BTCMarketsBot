@@ -29,5 +29,10 @@ namespace BTCMarketsBot
         {
             get { return $"/market/{BTCMarketsHelper.ExchangeType}/tick"; }
         }
+
+        public static string TRADING_FEE_PATH(string instrument, string currency)
+        {
+            return $"/account/{instrument}/{currency}/tradingfee";
+        }
     }
 }
