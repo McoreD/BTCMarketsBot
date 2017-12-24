@@ -2,10 +2,7 @@
 using RestSharp.Deserializers;
 using ShareX.HelpersLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BTCMarketsBot
 {
@@ -14,9 +11,9 @@ namespace BTCMarketsBot
         public static string ExchangeType { get; set; }
         public static int ProfitMargin { get; set; }
 
-        internal static MarketTickData MarketTickData { get; set; }
+        public static MarketTickData MarketTickData { get; set; }
 
-        internal static void GetMarketTick()
+        public static void GetMarketTick()
         {
             MarketTickData = JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
         }

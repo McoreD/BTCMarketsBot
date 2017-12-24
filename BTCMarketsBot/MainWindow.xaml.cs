@@ -31,7 +31,7 @@ namespace BTCMarketsBot
         public MainWindow()
         {
             InitializeComponent();
-            App.LoadSettings();
+            Bot.LoadSettings();
 
             marketTickTimer.Interval = new TimeSpan(0, 0, 20); // every 20 seconds
             marketTickTimer.Tick += MarketTickTimer_Tick;
@@ -54,14 +54,14 @@ namespace BTCMarketsBot
             {
                 cboBuySell.Items.Add(item.GetDescription());
             }
-            cboBuySell.SelectedIndex = App.Settings.ExchangeTypeIndex;
+            cboBuySell.SelectedIndex = Bot.Settings.ExchangeTypeIndex;
             BTCMarketsHelper.ExchangeType = cboBuySell.Text;
 
             cboProfitMargin.ItemsSource = listProfitMargins;
-            cboProfitMargin.SelectedIndex = App.Settings.ProfitMarginIndex;
+            cboProfitMargin.SelectedIndex = Bot.Settings.ProfitMarginIndex;
 
             cboIntervals.ItemsSource = listIntervalsBuySell;
-            cboIntervals.SelectedIndex = App.Settings.IntervalIndex;
+            cboIntervals.SelectedIndex = Bot.Settings.IntervalIndex;
         }
 
         private void MarketTickTimer_Tick(object sender, EventArgs e)
@@ -76,7 +76,7 @@ namespace BTCMarketsBot
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // Read API_KEY and PRIVATE_KEY
-            string fp = Path.Combine(App.PersonalFolder, "BTCMarketsAuth.txt");
+            string fp = Path.Combine(Bot.PersonalFolder, "BTCMarketsAuth.txt");
             if (File.Exists(fp))
             {
                 using (StreamReader sr = new StreamReader(fp))
@@ -98,11 +98,11 @@ namespace BTCMarketsBot
 
         private void MainWindow1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            App.Settings.ExchangeTypeIndex = cboBuySell.SelectedIndex;
-            App.Settings.ProfitMarginIndex = cboProfitMargin.SelectedIndex;
-            App.Settings.IntervalIndex = cboIntervals.SelectedIndex;
+            Bot.Settings.ExchangeTypeIndex = cboBuySell.SelectedIndex;
+            Bot.Settings.ProfitMarginIndex = cboProfitMargin.SelectedIndex;
+            Bot.Settings.IntervalIndex = cboIntervals.SelectedIndex;
 
-            App.SaveSettings();
+            Bot.SaveSettings();
         }
 
         private void UpdateGuiControls()

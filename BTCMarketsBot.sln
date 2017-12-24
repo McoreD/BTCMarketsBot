@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareX.HelpersLib", "..\Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTCmBotConsole", "BTCmBotConsole\BTCmBotConsole.csproj", "{4A6B3A20-C86D-406F-8327-3CAB10C063F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTCMarketLib", "BTCMarketLib\BTCMarketLib.csproj", "{07BACB13-B1B0-4097-85B5-7FACFE249966}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,16 @@ Global
 		{4A6B3A20-C86D-406F-8327-3CAB10C063F3}.WindowsStore|Any CPU.Build.0 = Release|Any CPU
 		{4A6B3A20-C86D-406F-8327-3CAB10C063F3}.WindowsStoreDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A6B3A20-C86D-406F-8327-3CAB10C063F3}.WindowsStoreDebug|Any CPU.Build.0 = Debug|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.Steam|Any CPU.ActiveCfg = Release|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.Steam|Any CPU.Build.0 = Release|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.WindowsStore|Any CPU.ActiveCfg = Release|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.WindowsStore|Any CPU.Build.0 = Release|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.WindowsStoreDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07BACB13-B1B0-4097-85B5-7FACFE249966}.WindowsStoreDebug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

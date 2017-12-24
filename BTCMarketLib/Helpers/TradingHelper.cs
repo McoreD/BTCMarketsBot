@@ -12,7 +12,7 @@ namespace BTCMarketsBot
         {
             TradingData tradingData = new TradingData();
 
-            double profitMargin = App.Settings.ProfitMarginSplit ? BTCMarketsHelper.ProfitMargin / 2 : BTCMarketsHelper.ProfitMargin;
+            double profitMargin = Bot.Settings.ProfitMarginSplit ? BTCMarketsHelper.ProfitMargin / 2 : BTCMarketsHelper.ProfitMargin;
 
             double profitMultiplier = profitMargin / 100.0 + 1.0;
 
@@ -22,11 +22,11 @@ namespace BTCMarketsBot
 
             double.TryParse(marketData.bestAsk, out buyPrice);
 
-            buyPrice = App.Settings.ProfitMarginSplit ? buyPrice * (1 - profitMargin / 100.0) : buyPrice;
+            buyPrice = Bot.Settings.ProfitMarginSplit ? buyPrice * (1 - profitMargin / 100.0) : buyPrice;
 
             tradingData.BuyPrice = buyPrice;
 
-            double tradingFees = App.Settings.TradingFee / 100.0 + 1;
+            double tradingFees = Bot.Settings.TradingFee / 100.0 + 1;
 
             tradingData.SpendTotal = tradingData.BuyVolume * buyPrice * tradingFees;
 

@@ -28,7 +28,7 @@ namespace BTCmBotConsole
             marketTickTimer.Elapsed += MarketTickTimer_Tick;
             marketTickTimer.Start();
 
-            App.LoadSettings();
+            Bot.LoadSettings();
             BTCMarketsHelper.ProfitMargin = 10;
 
             Console.ReadKey();
@@ -36,7 +36,7 @@ namespace BTCmBotConsole
 
         private static void ReadAPIKeys()
         {
-            string fp = Path.Combine(App.PersonalFolder, "BTCMarketsAuth.txt");
+            string fp = Path.Combine(Bot.PersonalFolder, "BTCMarketsAuth.txt");
             if (File.Exists(fp))
             {
                 using (StreamReader sr = new StreamReader(fp))

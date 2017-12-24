@@ -55,9 +55,9 @@
       <Project>{327750e1-9fb7-4cc3-8aea-9bc42180cad3}</Project>
       <Name>ShareX.HelpersLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BTCMarketsBot\BTCMarketsBot.csproj">
-      <Project>{06940b1c-91fa-4111-9da8-393066fb381f}</Project>
-      <Name>BTCMarketsBot</Name>
+    <ProjectReference Include="..\BTCMarketLib\BTCMarketLib.csproj">
+      <Project>{07bacb13-b1b0-4097-85b5-7facfe249966}</Project>
+      <Name>BTCMarketLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
