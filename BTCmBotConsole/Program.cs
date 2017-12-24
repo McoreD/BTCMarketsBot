@@ -14,13 +14,18 @@ namespace BTCmBotConsole
 {
     internal class Program
     {
+        private static double BuyVolume = 0.0;
         private static int TradeID = 1;
         private static Timer marketTickTimer = new Timer();
 
         private static void Main(string[] args)
         {
             // Read API_KEY and PRIVATE_KEY
-            ReadAPIKeys();
+            Bot.ReadAPIKeys();
+
+            // Load settings
+            Bot.LoadSettings();
+            Bot.Settings.ProfitMarginSplit = false;
 
             // configure timer - random between 30 and 60 seconds
             Random rnd = new Random();
@@ -28,33 +33,34 @@ namespace BTCmBotConsole
             marketTickTimer.Elapsed += MarketTickTimer_Tick;
             marketTickTimer.Start();
 
-            Bot.LoadSettings();
             BTCMarketsHelper.ProfitMargin = 10;
 
-            Console.ReadKey();
-        }
+            Console.Write("Input buy volume (ETH): ");
+            double.TryParse(Console.ReadLine().ToString(), out BuyVolume);
 
-        private static void ReadAPIKeys()
-        {
-            string fp = Path.Combine(Bot.PersonalFolder, "BTCMarketsAuth.txt");
-            if (File.Exists(fp))
-            {
-                using (StreamReader sr = new StreamReader(fp))
-                {
-                    ApplicationConstants.API_KEY = sr.ReadLine();
-                    ApplicationConstants.PRIVATE_KEY = sr.ReadLine();
-                    sr.Close();
-                }
-            }
+            Console.WriteLine("Waiting for next execution...");
+            Console.ReadLine();
         }
 
         private static void MarketTickTimer_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine($"Trade ID: {TradeID++}");
-            // get BTC/ETH
+       
+
+            // get BTC/ETH market data
             MarketTickData marketData = BTCMarketsHelper.GetMarketTick("ETH/BTC");
-            TradingData tradingData = TradingHelper.GetTradingData(marketData, 0.35);
-            Console.WriteLine(tradingData.BuyPrice.ToDecimalString(8));
+
+            // get trading data
+            TradingData tradingData = TradingHelper.GetTradingData(marketData, BuyVolume);
+
+            Console.WriteLine($"Buy price (BTC): {tradingData.BuyPrice.ToDecimalString(8)}");
+            Console.WriteLine($"Sell volume (ETH): {tradingData.SellVolume.ToDecimalString(8)}");
+            Console.WriteLine($"Sell price (BTC): {tradingData.BuyPrice.ToDecimalString(8)}");
+            Console.WriteLine($"Spend total (BTC): {tradingData.SpendTotal.ToDecimalString(8)}");
+
+
+            Console.WriteLine("Waiting for next execution...");
+            Console.WriteLine();
+
         }
     }
 }

@@ -13,7 +13,7 @@ namespace BTCMarketsBot
 
         public int ProfitMarginIndex { get; set; } = 1;
 
-        public bool ProfitMarginSplit { get; set; } = true;
+        public bool ProfitMarginSplit { get; set; } = false; // if true, 10% profit margin is buy low by 5% and sell high by 5%
 
         public int IntervalIndex { get; set; } = 0;
 

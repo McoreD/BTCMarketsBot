@@ -25,7 +25,7 @@ namespace BTCMarketsBot
             }
 
             listQueryTimestamps.Add(secondsSinceEpoch);
-            Console.WriteLine(listQueryTimestamps.Count + " " + secondsSinceEpoch);
+            Console.WriteLine($"Query ID: {listQueryTimestamps.Count} {secondsSinceEpoch}");
 
             if (listQueryTimestamps.Count > 100)
                 listQueryTimestamps.Clear();

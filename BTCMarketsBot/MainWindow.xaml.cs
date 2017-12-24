@@ -76,16 +76,7 @@ namespace BTCMarketsBot
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // Read API_KEY and PRIVATE_KEY
-            string fp = Path.Combine(Bot.PersonalFolder, "BTCMarketsAuth.txt");
-            if (File.Exists(fp))
-            {
-                using (StreamReader sr = new StreamReader(fp))
-                {
-                    ApplicationConstants.API_KEY = sr.ReadLine();
-                    ApplicationConstants.PRIVATE_KEY = sr.ReadLine();
-                    sr.Close();
-                }
-            }
+            Bot.ReadAPIKeys();
 
             TaskEx.Run(() =>
             {

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTCMarketsBot", "BTCMarkets
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareX.HelpersLib", "..\ShareX\ShareX.HelpersLib\ShareX.HelpersLib.csproj", "{327750E1-9FB7-4CC3-8AEA-9BC42180CAD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTCmBotConsole", "BTCmBotConsole\BTCmBotConsole.csproj", "{4A6B3A20-C86D-406F-8327-3CAB10C063F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTCMarketBotConsole", "BTCmBotConsole\BTCMarketBotConsole.csproj", "{4A6B3A20-C86D-406F-8327-3CAB10C063F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTCMarketLib", "BTCMarketLib\BTCMarketLib.csproj", "{07BACB13-B1B0-4097-85B5-7FACFE249966}"
 EndProject

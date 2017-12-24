@@ -9,6 +9,10 @@ namespace BTCMarketsBot
     public class BTCMarketsHelper
     {
         public static string ExchangeType { get; set; }
+
+        /// <summary>
+        /// Profit margin in percentage
+        /// </summary>
         public static int ProfitMargin { get; set; }
 
         public static MarketTickData MarketTickData { get; set; }
