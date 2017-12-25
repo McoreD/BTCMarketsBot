@@ -14,10 +14,12 @@ namespace BTCmBotConsole
 {
     internal class Program
     {
+        private const string INSTRUMENT = "ETH";
+        private const string CURRENCY = "BTC";
+
         private const string CONSOLE_WAITING = "Waiting for next execution...";
 
         private static OrderHistoryData OpenOrdersHistory;
-        private static double BuyVolume = 0.0;
         private static Timer marketTickTimer = new Timer();
 
         private static void Main(string[] args)
@@ -47,7 +49,7 @@ namespace BTCmBotConsole
         private static void MarketTickTimer_Tick(object sender, EventArgs e)
         {
             // Get number of Open Orders
-            OpenOrdersHistory = BTCMarketsHelper.OrderOpen();
+            OpenOrdersHistory = BTCMarketsHelper.OrderOpen(CURRENCY, INSTRUMENT, 10, "1");
 
             if (OpenOrdersHistory.orders.Length > 0)
             {
@@ -55,16 +57,16 @@ namespace BTCmBotConsole
             }
             else
             {
-                // get ETH/BTC market data
-                MarketTickData marketData = BTCMarketsHelper.GetMarketTick("ETH/BTC");
+                // get ETH/BTC market data i.e. instrument/currency
+                MarketTickData marketData = BTCMarketsHelper.GetMarketTick($"{INSTRUMENT}/{CURRENCY}");
 
                 // get trading data
                 TradingData tradingData = TradingHelper.GetTradingData(marketData);
 
-                Console.WriteLine($"Buy price (BTC): {tradingData.BuyPrice}");
-                Console.WriteLine($"Sell volume (ETH): {tradingData.SellVolume}");
-                Console.WriteLine($"Sell price (BTC): {tradingData.SellPrice}");
-                Console.WriteLine($"Spend total (BTC): {tradingData.SpendTotal.ToDecimalString(8)}");
+                Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice}");
+                Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume}");
+                Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice}");
+                Console.WriteLine($"Spend total ({marketData.currency}): {tradingData.SpendTotal.ToDecimalString(8)}");
 
                 // create order
                 CreateOrderData buyOrder = JsonHelpers.DeserializeFromString<CreateOrderData>(BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,

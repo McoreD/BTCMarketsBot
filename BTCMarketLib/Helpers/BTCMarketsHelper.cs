@@ -78,9 +78,9 @@ namespace BTCMarketsBot
         /// <param name="limit"># of Orders to return</param>
         /// <param name="since">Timestamp in ms to filter results</param>
         /// <returns>As per Order History response</returns>
-        public static string OrderOpen(string currency, string instrument, int limit, string since)
+        public static OrderHistoryData OrderOpen(string currency, string instrument, int limit, string since)
         {
-            return SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildOrderString(currency, instrument, limit, since));
+            return JsonHelpers.DeserializeFromString<OrderHistoryData>(SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildOrderString(currency, instrument, limit, since)));
         }
 
         /// <summary>

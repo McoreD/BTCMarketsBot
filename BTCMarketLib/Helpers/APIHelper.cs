@@ -47,7 +47,19 @@ namespace BTCMarketsBot
         public double volume { get; set; }
         public double openVolume { get; set; }
         public string clientRequestId { get; set; }
-        public string[] trades { get; set; }
+        public OrderTradesData[] trades { get; set; }
+    }
+
+    public class OrderTradesData
+    {
+        public int id { get; set; }
+        public double creationTime { get; set; }
+        public string description { get; set; }
+        public double price { get; set; }
+        public double volume { get; set; }
+        public string side { get; set; }
+        public double fee { get; set; }
+        public int orderIdd { get; set; }
     }
 
     public class BalanceData
