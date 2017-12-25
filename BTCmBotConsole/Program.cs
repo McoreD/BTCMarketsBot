@@ -33,7 +33,7 @@ namespace BTCmBotConsole
 
             // configure timer - random between 30 and 60 seconds
             Random rnd = new Random();
-            marketTickTimer.Interval = rnd.Next(30, 60) * 1000;
+            marketTickTimer.Interval = rnd.Next(300, 600) * 1000;
             marketTickTimer.Elapsed += MarketTickTimer_Tick;
             marketTickTimer.Start();
 
