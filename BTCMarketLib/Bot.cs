@@ -39,7 +39,7 @@ namespace BTCMarketsBot
             get
             {
                 string logsFolder = Path.Combine(PersonalFolder, "Logs");
-                string filename = string.Format("TreeGUI-Log-{0:yyyy-MM}.txt", DateTime.Now);
+                string filename = string.Format("BTCmBot-Log-{0:yyyy-MM}.csv", DateTime.Now);
                 return Path.Combine(logsFolder, filename);
             }
         }

@@ -21,23 +21,27 @@ namespace BTCmBotConsole
 
         private static OrderHistoryData OpenOrdersHistory;
         private static Timer marketTickTimer = new Timer();
+        private static Logger BotLogger;
 
         private static void Main(string[] args)
         {
+            // Configure Logger
+            BotLogger = new Logger(Bot.LogFilePath);
+            BotLogger.WriteLine($",Buy Volume (Unit 1), Unit 1, Balance (Unit 2), Bid/Price (Unit 2), Unit 2, Spend Total (Unit 2), Profit, Sell Volume, Ask/Sell Price");
+
             // Read API_KEY and PRIVATE_KEY
             Bot.ReadAPIKeys();
 
             // Load settings
             Bot.LoadSettings();
+            BTCMarketsHelper.ProfitMargin = 4;
             Bot.Settings.ProfitMarginSplit = true;
 
             // configure timer - random between 30 and 60 seconds
             Random rnd = new Random();
-            marketTickTimer.Interval = rnd.Next(300, 600) * 1000;
+            marketTickTimer.Interval = rnd.Next(60, 100) * 1000;
             marketTickTimer.Elapsed += MarketTickTimer_Tick;
             marketTickTimer.Start();
-
-            BTCMarketsHelper.ProfitMargin = 8;
 
             // Console.Write("Input buy volume (ETH): ");
             // double.TryParse(Console.ReadLine().ToString(), out BuyVolume);
@@ -51,7 +55,7 @@ namespace BTCmBotConsole
             // Get number of Open Orders
             OpenOrdersHistory = BTCMarketsHelper.OrderOpen(CURRENCY, INSTRUMENT, 10, "1");
 
-            if (OpenOrdersHistory.orders.Length > 0)
+            if (OpenOrdersHistory.orders.Length > 1)
             {
                 Console.WriteLine("Open orders are still active...");
             }
@@ -63,23 +67,36 @@ namespace BTCmBotConsole
                 // get trading data
                 TradingData tradingData = TradingHelper.GetTradingData(marketData);
 
-                Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice}");
-                Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume}");
-                Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice}");
+                Console.WriteLine($"Buy volume ({marketData.instrument}): {tradingData.BuyVolume.ToDecimalString(8)}");
+                Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice.ToDecimalString(8)}");
+                Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume.ToDecimalString(8)}");
+                Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice.ToDecimalString(8)}");
                 Console.WriteLine($"Spend total ({marketData.currency}): {tradingData.SpendTotal.ToDecimalString(8)}");
 
-                // create order
-                CreateOrderData buyOrder = JsonHelpers.DeserializeFromString<CreateOrderData>(BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
+                // create orders
+                CreateOrderData buyOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
                     (long)(tradingData.BuyPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
                     (int)(tradingData.BuyVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
-                    "Bid", "Limit"));
+                    "Bid", "Limit");
 
                 if (buyOrder.success)
                 {
-                    CreateOrderData sellOrder = JsonHelpers.DeserializeFromString<CreateOrderData>(BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
+                    CreateOrderData sellOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
                      (long)(tradingData.SellPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
                     (int)(tradingData.SellVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
-                     "Ask", "Limit"));
+                     "Ask", "Limit");
+
+                    if (sellOrder.success)
+                    {
+                        // append csv line
+                        BotLogger.WriteLine($",{tradingData.BuyVolume.ToDecimalString(8)}, {marketData.instrument}, Balance (Unit 2), " +
+                            $"{tradingData.BuyPrice.ToDecimalString(8)}, {marketData.currency}, {tradingData.SpendTotal.ToDecimalString(8)}, Profit, " +
+                            $"{tradingData.SellVolume.ToDecimalString(8)}, {tradingData.SellPrice.ToDecimalString(8)}");
+                    }
+                    else
+                    {
+                        Console.WriteLine(sellOrder.errorMessage);
+                    }
                 }
                 else
                 {

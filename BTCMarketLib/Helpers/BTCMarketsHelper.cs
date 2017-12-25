@@ -1,6 +1,6 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using RestSharp.Deserializers;
-using ShareX.HelpersLib;
 using System;
 using System.Text;
 
@@ -21,12 +21,12 @@ namespace BTCMarketsBot
 
         public static void GetMarketTick()
         {
-            MarketTickData = JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
+            MarketTickData = JsonConvert.DeserializeObject<MarketTickData>(SendRequest(MethodConstants.MARKET_TICK_PATH, null));
         }
 
         public static MarketTickData GetMarketTick(string pair)
         {
-            return JsonHelpers.DeserializeFromString<MarketTickData>(SendRequest($"/market/{pair}/tick", null));
+            return JsonConvert.DeserializeObject<MarketTickData>(SendRequest($"/market/{pair}/tick", null));
         }
 
         #endregion Market Methods
@@ -39,7 +39,7 @@ namespace BTCMarketsBot
         /// <returns>[{"balance":1000000000,"pendingFunds":0,"currency":"AUD"},{"balance":1000000000,"pendingFunds":0,"currency":"BTC"},{"balance":1000000000,"pendingFunds":0,"currency":"LTC"}]</returns>
         public static double RetrieveAccountBalance(string currency)
         {
-            BalanceData items = new BalanceData(JsonHelpers.DeserializeFromString<BalanceItem[]>(SendRequest(MethodConstants.ACCOUNT_BALANCE_PATH, null)));
+            BalanceData items = new BalanceData(JsonConvert.DeserializeObject<BalanceItem[]>(SendRequest(MethodConstants.ACCOUNT_BALANCE_PATH, null)));
 
             return items.GetAvailableBalance(currency);
         }
@@ -80,7 +80,7 @@ namespace BTCMarketsBot
         /// <returns>As per Order History response</returns>
         public static OrderHistoryData OrderOpen(string currency, string instrument, int limit, string since)
         {
-            return JsonHelpers.DeserializeFromString<OrderHistoryData>(SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildOrderString(currency, instrument, limit, since)));
+            return JsonConvert.DeserializeObject<OrderHistoryData>(SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildOrderString(currency, instrument, limit, since)));
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace BTCMarketsBot
         /// <returns>As per Order History response</returns>
         public static OrderHistoryData OrderOpen()
         {
-            return JsonHelpers.DeserializeFromString<OrderHistoryData>(SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildDefaultOrderString()));
+            return JsonConvert.DeserializeObject<OrderHistoryData>(SendRequest(MethodConstants.ORDER_OPEN_PATH, RequestHelper.BuildDefaultOrderString()));
         }
 
         /// <summary>
@@ -141,12 +141,12 @@ namespace BTCMarketsBot
         /// <returns>Success: {"success":true,"errorCode":null,"errorMessage":null,"id":100,"clientRequestId":"abc-cdf-1000"}
         ///          Error: {"success":false,"errorCode":3,"errorMessage":"Invalid argument.","id":0,"clientRequestId":"abc-cdf-1000"}
         /// </returns>
-        public static string CreateNewOrder(string currency, string instrument, long price, int volume,
+        public static CreateOrderData CreateNewOrder(string currency, string instrument, long price, int volume,
             string orderSide, string orderType)
         {
-            return SendRequest(
+            return JsonConvert.DeserializeObject<CreateOrderData>(SendRequest(
                 MethodConstants.ORDER_CREATE_PATH,
-                RequestHelper.BuildNewOrderString(currency, instrument, price, volume, orderSide, orderType));
+                RequestHelper.BuildNewOrderString(currency, instrument, price, volume, orderSide, orderType)));
         }
 
         /// <summary>

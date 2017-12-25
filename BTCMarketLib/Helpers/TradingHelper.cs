@@ -1,9 +1,5 @@
-﻿using ShareX.HelpersLib;
+﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BTCMarketsBot
 {
@@ -18,7 +14,7 @@ namespace BTCMarketsBot
         {
             double balance = BTCMarketsHelper.RetrieveAccountBalance(marketData.currency) * 0.4; // buying currency
 
-            TradingFeeData feeData = JsonHelpers.DeserializeFromString<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
+            TradingFeeData feeData = JsonConvert.DeserializeObject<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
             double tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData);
 
             double buyVolume = Math.Round((balance / 100000000.0) / (marketData.bestAsk * tradingFeeMultiplier), 8);
@@ -43,7 +39,7 @@ namespace BTCMarketsBot
             tradingData.BuyPrice = buyPrice;
 
             if (feeData == null)
-                feeData = JsonHelpers.DeserializeFromString<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
+                feeData = JsonConvert.DeserializeObject<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
 
             double tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData); // Bot.Settings.TradingFee / 100.0 + 1;
 
