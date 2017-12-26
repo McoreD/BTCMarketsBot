@@ -34,8 +34,7 @@ namespace BTCmBotConsole
 
             // Load settings
             Bot.LoadSettings();
-            BTCMarketsHelper.ProfitMargin = 4;
-            Bot.Settings.ProfitMarginSplit = true;
+            BTCMarketsHelper.ProfitMargin = 2;
 
             // configure timer - random between 30 and 60 seconds
             Random rnd = new Random();
@@ -55,53 +54,60 @@ namespace BTCmBotConsole
             // Get number of Open Orders
             OpenOrdersHistory = BTCMarketsHelper.OrderOpen(CURRENCY, INSTRUMENT, 10, "1");
 
-            if (OpenOrdersHistory.orders.Length > 1)
+            if (OpenOrdersHistory.success && OpenOrdersHistory.orders != null)
             {
-                Console.WriteLine("Open orders are still active...");
-            }
-            else
-            {
-                // get ETH/BTC market data i.e. instrument/currency
-                MarketTickData marketData = BTCMarketsHelper.GetMarketTick($"{INSTRUMENT}/{CURRENCY}");
-
-                // get trading data
-                TradingData tradingData = TradingHelper.GetTradingData(marketData);
-
-                Console.WriteLine($"Buy volume ({marketData.instrument}): {tradingData.BuyVolume.ToDecimalString(8)}");
-                Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice.ToDecimalString(8)}");
-                Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume.ToDecimalString(8)}");
-                Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice.ToDecimalString(8)}");
-                Console.WriteLine($"Spend total ({marketData.currency}): {tradingData.SpendTotal.ToDecimalString(8)}");
-
-                // create orders
-                CreateOrderData buyOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
-                    (long)(tradingData.BuyPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
-                    (int)(tradingData.BuyVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
-                    "Bid", "Limit");
-
-                if (buyOrder.success)
+                if (OpenOrdersHistory.orders.Length > 1)
                 {
-                    CreateOrderData sellOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
-                     (long)(tradingData.SellPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
-                    (int)(tradingData.SellVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
-                     "Ask", "Limit");
-
-                    if (sellOrder.success)
-                    {
-                        // append csv line
-                        BotLogger.WriteLine($",{tradingData.BuyVolume.ToDecimalString(8)}, {marketData.instrument}, Balance (Unit 2), " +
-                            $"{tradingData.BuyPrice.ToDecimalString(8)}, {marketData.currency}, {tradingData.SpendTotal.ToDecimalString(8)}, Profit, " +
-                            $"{tradingData.SellVolume.ToDecimalString(8)}, {tradingData.SellPrice.ToDecimalString(8)}");
-                    }
-                    else
-                    {
-                        Console.WriteLine(sellOrder.errorMessage);
-                    }
+                    Console.WriteLine("Open orders are still active...");
                 }
                 else
                 {
-                    Console.WriteLine(buyOrder.errorMessage);
+                    // get ETH/BTC market data i.e. instrument/currency
+                    MarketTickData marketData = BTCMarketsHelper.GetMarketTick($"{INSTRUMENT}/{CURRENCY}");
+
+                    // get trading data
+                    TradingData tradingData = TradingHelper.GetTradingData(marketData, splitProfitMargin: true);
+
+                    Console.WriteLine($"Buy volume ({marketData.instrument}): {tradingData.BuyVolume.ToDecimalString(8)}");
+                    Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice.ToDecimalString(8)}");
+                    Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume.ToDecimalString(8)}");
+                    Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice.ToDecimalString(8)}");
+                    Console.WriteLine($"Spend total ({marketData.currency}): {tradingData.SpendTotal.ToDecimalString(8)}");
+
+                    // create orders
+                    CreateOrderData buyOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
+                        (long)(tradingData.BuyPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
+                        (int)(tradingData.BuyVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
+                        "Bid", "Limit");
+
+                    if (buyOrder.success)
+                    {
+                        CreateOrderData sellOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
+                         (long)(tradingData.SellPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
+                        (int)(tradingData.SellVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
+                         "Ask", "Limit");
+
+                        if (sellOrder.success)
+                        {
+                            // append csv line
+                            BotLogger.WriteLine($",{tradingData.BuyVolume.ToDecimalString(8)}, {marketData.instrument}, Balance (Unit 2), " +
+                                $"{tradingData.BuyPrice.ToDecimalString(8)}, {marketData.currency}, {tradingData.SpendTotal.ToDecimalString(8)}, {BTCMarketsHelper.ProfitMargin}%, " +
+                                $"{tradingData.SellVolume.ToDecimalString(8)}, {tradingData.SellPrice.ToDecimalString(8)}");
+                        }
+                        else
+                        {
+                            Console.WriteLine(sellOrder.errorMessage);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(buyOrder.errorMessage);
+                    }
                 }
+            }
+            else
+            {
+                Console.WriteLine(OpenOrdersHistory.errorMessage);
             }
 
             Console.WriteLine(CONSOLE_WAITING);

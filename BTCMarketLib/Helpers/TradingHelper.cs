@@ -10,7 +10,7 @@ namespace BTCMarketsBot
         /// </summary>
         /// <param name="marketData"></param>
         /// <returns></returns>
-        public static TradingData GetTradingData(MarketTickData marketData)
+        public static TradingData GetTradingData(MarketTickData marketData, bool splitProfitMargin)
         {
             double balance = BTCMarketsHelper.RetrieveAccountBalance(marketData.currency) * 0.4; // buying currency
 
@@ -19,14 +19,14 @@ namespace BTCMarketsBot
 
             double buyVolume = Math.Round((balance / 100000000.0) / (marketData.bestAsk * tradingFeeMultiplier), 8);
 
-            return GetTradingData(marketData, buyVolume, feeData);
+            return GetTradingData(marketData, splitProfitMargin, buyVolume, feeData);
         }
 
-        public static TradingData GetTradingData(MarketTickData marketData, double buyVolume, TradingFeeData feeData = null)
+        public static TradingData GetTradingData(MarketTickData marketData, bool splitProfitMargin, double buyVolume, TradingFeeData feeData = null)
         {
             TradingData tradingData = new TradingData();
 
-            double profitMargin = Bot.Settings.ProfitMarginSplit ? BTCMarketsHelper.ProfitMargin / 2 : BTCMarketsHelper.ProfitMargin;
+            double profitMargin = splitProfitMargin ? BTCMarketsHelper.ProfitMargin / 2 : BTCMarketsHelper.ProfitMargin;
 
             double profitMultiplier = profitMargin / 100.0 + 1.0;
 
@@ -34,7 +34,7 @@ namespace BTCMarketsBot
 
             double buyPrice = marketData.bestAsk;
 
-            buyPrice = Math.Round(Bot.Settings.ProfitMarginSplit ? buyPrice * (1 - profitMargin / 100.0) : buyPrice, 8);
+            buyPrice = Math.Round(splitProfitMargin ? buyPrice * (1 - profitMargin / 100.0) : buyPrice, 8);
 
             tradingData.BuyPrice = buyPrice;
 
