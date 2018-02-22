@@ -14,6 +14,6 @@ namespace BTCMarketsBot
 
         public const string BASEURL = "https://api.btcmarkets.net";
 
-        public const double NUMERIC_MULTIPLIER = 100000000.0;
+        public const decimal NUMERIC_MULTIPLIER = 100000000;
     }
 }

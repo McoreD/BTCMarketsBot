@@ -28,7 +28,7 @@ namespace BTCMarketsBot
             return sb.ToString();
         }
 
-        public static string BuildNewOrderString(string currency, string instrument, long price, int volume,
+        public static string BuildNewOrderString(string currency, string instrument, decimal price, long volume,
             string orderSide, string orderType)
         {
             var sb = new StringBuilder();

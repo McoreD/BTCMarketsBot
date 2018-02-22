@@ -37,7 +37,7 @@ namespace BTCMarketsBot
         /// GET: Returns the current account balance of all Currency and BTC/LTC in your Account
         /// </summary>
         /// <returns>[{"balance":1000000000,"pendingFunds":0,"currency":"AUD"},{"balance":1000000000,"pendingFunds":0,"currency":"BTC"},{"balance":1000000000,"pendingFunds":0,"currency":"LTC"}]</returns>
-        public static double RetrieveAccountBalance(string currency)
+        public static decimal RetrieveAccountBalance(string currency)
         {
             BalanceData items = new BalanceData(JsonConvert.DeserializeObject<BalanceItem[]>(SendRequest(MethodConstants.ACCOUNT_BALANCE_PATH, null)));
 
@@ -141,7 +141,7 @@ namespace BTCMarketsBot
         /// <returns>Success: {"success":true,"errorCode":null,"errorMessage":null,"id":100,"clientRequestId":"abc-cdf-1000"}
         ///          Error: {"success":false,"errorCode":3,"errorMessage":"Invalid argument.","id":0,"clientRequestId":"abc-cdf-1000"}
         /// </returns>
-        public static CreateOrderData CreateNewOrder(string currency, string instrument, long price, int volume,
+        public static CreateOrderData CreateNewOrder(string currency, string instrument, long price, long volume,
             string orderSide, string orderType)
         {
             return JsonConvert.DeserializeObject<CreateOrderData>(SendRequest(

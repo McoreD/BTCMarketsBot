@@ -8,9 +8,9 @@ namespace BTCMarketsBot
 {
     public class MarketTickData
     {
-        public double bestbid { get; set; }
-        public double bestAsk { get; set; }
-        public double lastPrice { get; set; }
+        public decimal bestbid { get; set; }
+        public decimal bestAsk { get; set; }
+        public decimal lastPrice { get; set; }
         public string currency { get; set; }
         public string instrument { get; set; }
         public double timestamp { get; set; }
@@ -71,9 +71,9 @@ namespace BTCMarketsBot
             this.items = items;
         }
 
-        public double GetAvailableBalance(string currency)
+        public decimal GetAvailableBalance(string currency)
         {
-            double balance = 0.0;
+            decimal balance = 0;
 
             foreach (BalanceItem item in items)
             {
@@ -89,8 +89,8 @@ namespace BTCMarketsBot
 
     public class BalanceItem
     {
-        public double balance { get; set; }
-        public double pendingFunds { get; set; }
+        public decimal balance { get; set; }
+        public decimal pendingFunds { get; set; }
         public string currency { get; set; }
     }
 
@@ -99,12 +99,12 @@ namespace BTCMarketsBot
         public bool success { get; set; }
         public string errorCode { get; set; }
         public string errorMessage { get; set; }
-        public double tradingFeeRate { get; set; }
+        public decimal tradingFeeRate { get; set; }
         public double volume30Day { get; set; }
 
-        public static double GetTradingFee(TradingFeeData data)
+        public static decimal GetTradingFee(TradingFeeData data)
         {
-            return data.tradingFeeRate / 100000000.0;
+            return data.tradingFeeRate / 100000000;
         }
     }
 
