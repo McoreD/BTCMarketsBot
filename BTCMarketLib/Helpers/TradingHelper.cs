@@ -46,7 +46,7 @@ namespace BTCMarketsBot
 
             tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * buyPrice * tradingFeeMultiplier, 8);
 
-            tradingData.SellPrice = Math.Round(buyPrice * profitMultiplier, roundPos);
+            tradingData.SellPrice = Math.Round(marketData.bestbid * profitMultiplier, roundPos);
 
             tradingData.SellVolume = Math.Round(tradingData.SpendTotal / tradingData.SellPrice, 8);
 
