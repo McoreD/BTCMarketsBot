@@ -44,7 +44,7 @@ namespace BTCMarketsBot
 
             decimal tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData); // Bot.Settings.TradingFee / 100.0 + 1;
 
-            tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * buyPrice * tradingFeeMultiplier, 8);
+            tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * buyPrice * tradingFeeMultiplier, roundPos);
 
             tradingData.SellPrice = Math.Round(marketData.bestbid * profitMultiplier, roundPos);
 
