@@ -58,7 +58,7 @@ namespace BTCMarketsBot
             BTCMarketsHelper.ExchangeType = cboBuySell.Text;
 
             cboProfitMargin.ItemsSource = listProfitMargins;
-            cboProfitMargin.SelectedIndex = Bot.Settings.ProfitMarginIndex;
+            cboProfitMargin.SelectedIndex = Bot.Settings.ProfitMargin;
 
             cboIntervals.ItemsSource = listIntervalsBuySell;
             cboIntervals.SelectedIndex = Bot.Settings.IntervalIndex;
@@ -75,9 +75,6 @@ namespace BTCMarketsBot
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Read API_KEY and PRIVATE_KEY
-            Bot.ReadAPIKeys();
-
             TaskEx.Run(() =>
             {
                 BTCMarketsHelper.GetMarketTick();
@@ -90,7 +87,7 @@ namespace BTCMarketsBot
         private void MainWindow1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Bot.Settings.ExchangeTypeIndex = cboBuySell.SelectedIndex;
-            Bot.Settings.ProfitMarginIndex = cboProfitMargin.SelectedIndex;
+            Bot.Settings.ProfitMargin = cboProfitMargin.SelectedIndex;
             Bot.Settings.IntervalIndex = cboIntervals.SelectedIndex;
 
             Bot.SaveSettings();

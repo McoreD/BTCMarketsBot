@@ -12,20 +12,6 @@ namespace BTCMarketsBot
         public static readonly string PersonalFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BTCMarketsBot");
         public static Settings Settings { get; private set; }
 
-        public static void ReadAPIKeys()
-        {
-            string fp = Path.Combine(Bot.PersonalFolder, "BTCMarketsAuth.txt");
-            if (File.Exists(fp))
-            {
-                using (StreamReader sr = new StreamReader(fp))
-                {
-                    ApplicationConstants.API_KEY = sr.ReadLine();
-                    ApplicationConstants.PRIVATE_KEY = sr.ReadLine();
-                    sr.Close();
-                }
-            }
-        }
-
         public static string SettingsFilePath
         {
             get

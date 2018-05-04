@@ -8,10 +8,6 @@ namespace BTCMarketsBot
 {
     public class ApplicationConstants
     {
-        public static string API_KEY { get; set; }
-
-        public static string PRIVATE_KEY { get; set; }
-
         public const string BASEURL = "https://api.btcmarkets.net";
 
         public const decimal NUMERIC_MULTIPLIER = 100000000;

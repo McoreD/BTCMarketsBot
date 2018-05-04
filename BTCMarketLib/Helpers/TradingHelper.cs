@@ -12,12 +12,12 @@ namespace BTCMarketsBot
         /// <returns></returns>
         public static TradingData GetTradingData(MarketTickData marketData, bool splitProfitMargin = false)
         {
-            decimal balance = BTCMarketsHelper.RetrieveAccountBalance(marketData.currency) / 2; // buying currency
+            decimal balance = BTCMarketsHelper.RetrieveAccountBalance(marketData.currency); // buying currency
 
             TradingFeeData feeData = JsonConvert.DeserializeObject<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
             decimal tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData);
 
-            decimal buyVolume = Math.Round((balance / 100000000) / (marketData.bestAsk * tradingFeeMultiplier), 8); // maximum buy volume
+            decimal buyVolume = Math.Round(Math.Floor(balance / 100000000) / (Bot.Settings.BuyPrice * tradingFeeMultiplier), 8); // maximum buy volume
 
             return GetTradingData(marketData, splitProfitMargin, buyVolume, feeData);
         }
@@ -26,30 +26,26 @@ namespace BTCMarketsBot
         {
             TradingData tradingData = new TradingData();
 
-            decimal profitMargin = splitProfitMargin ? BTCMarketsHelper.ProfitMargin / 2 : BTCMarketsHelper.ProfitMargin;
-
-            decimal profitMultiplier = profitMargin / 100 + 1;
-
             tradingData.BuyVolume = buyVolume;
-
-            decimal buyPrice = marketData.bestAsk;
 
             decimal tradingFee = TradingFeeData.GetTradingFee(feeData);
             decimal tradingFeeMultiplier = 1 + tradingFee; // Bot.Settings.TradingFee / 100.0 + 1;
 
             int roundPos = marketData.currency == "AUD" ? 2 : 8;
-            buyPrice = Math.Round(buyPrice * (1 - (profitMargin + tradingFee) / 100) * (1 - (profitMargin + tradingFee) / 100), roundPos); // tradingFee^2 to cover buying and selling
 
-            tradingData.BuyPrice = buyPrice;
+            tradingData.BuyPrice = Math.Round(Bot.Settings.BuyPrice, roundPos);
 
-            if (feeData == null)
-                feeData = JsonConvert.DeserializeObject<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
+            tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * tradingData.BuyPrice * tradingFeeMultiplier, roundPos);
 
-            tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * buyPrice * tradingFeeMultiplier, roundPos);
-
-            tradingData.SellPrice = Math.Round(marketData.bestbid * profitMultiplier * tradingFeeMultiplier, roundPos);
+            tradingData.SellPrice = Math.Round(Bot.Settings.SellPrice, roundPos);
 
             tradingData.SellVolume = Math.Round(tradingData.SpendTotal / tradingData.SellPrice, 8);
+
+            tradingData.ReceiveTotal = Math.Round(tradingData.SellPrice * tradingData.SellVolume, roundPos);
+
+            double profitMultiplier = (double)(BTCMarketsHelper.ProfitMargin + 100.0) / 100.0;
+            tradingData.IsProfitableBuy = Bot.Settings.BuyPrice < Math.Round(marketData.bestAsk / (decimal)profitMultiplier / tradingFeeMultiplier, roundPos);
+            tradingData.IsProfitableSell = Bot.Settings.SellPrice > Math.Round(marketData.bestbid * (decimal)profitMultiplier * tradingFeeMultiplier, roundPos);
 
             return tradingData;
         }
@@ -63,5 +59,9 @@ namespace BTCMarketsBot
         public decimal SellPrice { get; set; }
 
         public decimal SpendTotal { get; set; }
+        public decimal ReceiveTotal { get; set; }
+
+        public bool IsProfitableBuy { get; set; }
+        public bool IsProfitableSell { get; set; }
     }
 }

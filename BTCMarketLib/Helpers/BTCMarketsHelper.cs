@@ -180,7 +180,7 @@ namespace BTCMarketsBot
                 var stringToSign = BuildStringToSign(action, postData, timestamp);
 
                 // build signature to be included in the http header
-                var signature = SecurityHelper.ComputeHash(ApplicationConstants.PRIVATE_KEY, stringToSign);
+                var signature = SecurityHelper.ComputeHash(Bot.Settings.PrivateKey, stringToSign);
 
                 response = Query(postData, action, signature, timestamp);
             }
@@ -259,7 +259,7 @@ namespace BTCMarketsBot
             btcRequest.AddHeader("Accept", HeaderConstants.CONTENT);
             btcRequest.AddHeader("Accept-Charset", HeaderConstants.ENCODING);
             btcRequest.AddHeader("Content-Type", HeaderConstants.CONTENT);
-            btcRequest.AddHeader(HeaderConstants.APIKEY_HEADER, ApplicationConstants.API_KEY);
+            btcRequest.AddHeader(HeaderConstants.APIKEY_HEADER, Bot.Settings.APIKey);
             btcRequest.AddHeader(HeaderConstants.SIGNATURE_HEADER, signature);
             btcRequest.AddHeader(HeaderConstants.TIMESTAMP_HEADER, timestamp);
 

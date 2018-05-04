@@ -32,9 +32,6 @@ namespace BTCmBotConsole
             // BotLogger.WriteLine(",BTC/AUD, ETH/AUD, ETH/BTC");
             BotLogger.WriteLine($",Buy Volume (Unit 1), Unit 1, Balance (Unit 2), Bid/Price (Unit 2), Unit 2, Spend Total (Unit 2), Profit, Sell Volume, Ask/Sell Price");
 
-            // Read API_KEY and PRIVATE_KEY
-            Bot.ReadAPIKeys();
-
             // Load settings
             Bot.LoadSettings();
 
@@ -58,6 +55,9 @@ namespace BTCmBotConsole
 
         private static void Trade1()
         {
+            // Get updated Buy/Sell prices
+            Bot.LoadSettings();
+
             // Settings
             BTCMarketsHelper.ProfitMargin = 6;
 
@@ -66,7 +66,7 @@ namespace BTCmBotConsole
 
             if (OpenOrdersHistory.success && OpenOrdersHistory.orders != null)
             {
-                if (OpenOrdersHistory.orders.Length > 1)
+                if (OpenOrdersHistory.orders.Length > 0)
                 {
                     Console.WriteLine("Open orders are still active...");
                 }
@@ -78,19 +78,22 @@ namespace BTCmBotConsole
                     // get trading data
                     TradingData tradingData = TradingHelper.GetTradingData(marketData, splitProfitMargin: true);
 
-                    Console.WriteLine($"Buy volume ({marketData.instrument}): {tradingData.BuyVolume}");
-                    Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice}");
-                    Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume}");
-                    Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice}");
-                    Console.WriteLine($"Spend total ({marketData.currency}): {tradingData.SpendTotal}");
-
                     // create orders
-                    CreateOrderData buyOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
-                        (long)(tradingData.BuyPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
-                        (long)(tradingData.BuyVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
-                        "Bid", "Limit");
+                    if (tradingData.IsProfitableBuy)
+                    {
+                        CreateOrderData buyOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
+                            (long)(tradingData.BuyPrice * ApplicationConstants.NUMERIC_MULTIPLIER),
+                            (long)(tradingData.BuyVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
+                            "Bid", "Limit");
 
-                    if (buyOrder.success)
+                        Console.WriteLine($"Buy volume ({marketData.instrument}): {tradingData.BuyVolume}");
+                        Console.WriteLine($"Buy price ({marketData.currency}): {tradingData.BuyPrice}");
+                        Console.WriteLine($"Spend total ({marketData.currency}): {tradingData.SpendTotal}");
+
+                        if (!buyOrder.success) Console.WriteLine(buyOrder.errorMessage);
+                    }
+
+                    if (tradingData.IsProfitableSell)
                     {
                         System.Threading.Thread.Sleep(rnd.Next(1, 10) * 1000);
                         CreateOrderData sellOrder = BTCMarketsHelper.CreateNewOrder(marketData.currency, marketData.instrument,
@@ -98,22 +101,17 @@ namespace BTCmBotConsole
                         (long)(tradingData.SellVolume * ApplicationConstants.NUMERIC_MULTIPLIER),
                          "Ask", "Limit");
 
-                        if (sellOrder.success)
-                        {
-                            // append csv line
-                            BotLogger.WriteLine($",{tradingData.BuyVolume}, {marketData.instrument}, Balance (Unit 2), " +
-                                $"{tradingData.BuyPrice}, {marketData.currency}, {tradingData.SpendTotal}, {BTCMarketsHelper.ProfitMargin}%, " +
-                                $"{tradingData.SellVolume}, {tradingData.SellPrice}");
-                        }
-                        else
-                        {
-                            Console.WriteLine(sellOrder.errorMessage);
-                        }
+                        Console.WriteLine($"Sell volume ({marketData.instrument}): {tradingData.SellVolume}");
+                        Console.WriteLine($"Sell price ({marketData.currency}): {tradingData.SellPrice}");
+                        Console.WriteLine($"Receive total ({marketData.currency}): {tradingData.ReceiveTotal}");
+
+                        if (!sellOrder.success) Console.WriteLine(sellOrder.errorMessage);
                     }
-                    else
-                    {
-                        Console.WriteLine(buyOrder.errorMessage);
-                    }
+
+                    // append csv line
+                    BotLogger.WriteLine($",{tradingData.BuyVolume}, {marketData.instrument}, Balance (Unit 2), " +
+                        $"{tradingData.BuyPrice}, {marketData.currency}, {tradingData.SpendTotal}, {BTCMarketsHelper.ProfitMargin}%, " +
+                        $"{tradingData.SellVolume}, {tradingData.SellPrice}");
                 }
             }
             else
