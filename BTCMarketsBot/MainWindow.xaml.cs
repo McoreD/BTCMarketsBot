@@ -112,8 +112,8 @@ namespace BTCMarketsBot
             {
                 if (!string.IsNullOrEmpty(txtVolume1.Text))
                 {
-                    double buyVolume;
-                    double.TryParse(txtVolume1.Text, out buyVolume);
+                    decimal buyVolume;
+                    decimal.TryParse(txtVolume1.Text, out buyVolume);
 
                     TradingData tradingData = TradingHelper.GetTradingData(BTCMarketsHelper.MarketTickData, Bot.Settings.ProfitMarginSplit, buyVolume);
                     txtPrice1.Text = tradingData.BuyPrice.ToDecimalString(8);

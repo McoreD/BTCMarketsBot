@@ -34,19 +34,20 @@ namespace BTCMarketsBot
 
             decimal buyPrice = marketData.bestAsk;
 
+            decimal tradingFee = TradingFeeData.GetTradingFee(feeData);
+            decimal tradingFeeMultiplier = 1 + tradingFee; // Bot.Settings.TradingFee / 100.0 + 1;
+
             int roundPos = marketData.currency == "AUD" ? 2 : 8;
-            buyPrice = Math.Round(splitProfitMargin ? buyPrice * (1 - profitMargin / 100) : buyPrice, roundPos);
+            buyPrice = Math.Round(buyPrice * (1 - (profitMargin + tradingFee) / 100) * (1 - (profitMargin + tradingFee) / 100), roundPos); // tradingFee^2 to cover buying and selling
 
             tradingData.BuyPrice = buyPrice;
 
             if (feeData == null)
                 feeData = JsonConvert.DeserializeObject<TradingFeeData>(BTCMarketsHelper.SendRequest(MethodConstants.TRADING_FEE_PATH(marketData.instrument, marketData.currency), null));
 
-            decimal tradingFeeMultiplier = 1 + TradingFeeData.GetTradingFee(feeData); // Bot.Settings.TradingFee / 100.0 + 1;
-
             tradingData.SpendTotal = Math.Round(tradingData.BuyVolume * buyPrice * tradingFeeMultiplier, roundPos);
 
-            tradingData.SellPrice = Math.Round(marketData.bestbid * profitMultiplier, roundPos);
+            tradingData.SellPrice = Math.Round(marketData.bestbid * profitMultiplier * tradingFeeMultiplier, roundPos);
 
             tradingData.SellVolume = Math.Round(tradingData.SpendTotal / tradingData.SellPrice, 8);
 

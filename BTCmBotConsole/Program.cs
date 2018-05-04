@@ -23,10 +23,6 @@ namespace BTCmBotConsole
         private static Timer marketTickTimer = new Timer();
         private static Logger BotLogger;
 
-        private static decimal lastETH_BTC = 0;
-        private static decimal lastBTC_Volume = 0;
-        private static decimal lastETH_Volume = 0;
-
         private static Random rnd = new Random();
 
         private static void Main(string[] args)
@@ -63,14 +59,14 @@ namespace BTCmBotConsole
         private static void Trade1()
         {
             // Settings
-            BTCMarketsHelper.ProfitMargin = 4;
+            BTCMarketsHelper.ProfitMargin = 6;
 
             // Get number of Open Orders
             OpenOrdersHistory = BTCMarketsHelper.OrderOpen(CURRENCY, INSTRUMENT, 10, "1");
 
             if (OpenOrdersHistory.success && OpenOrdersHistory.orders != null)
             {
-                if (OpenOrdersHistory.orders.Length > 2)
+                if (OpenOrdersHistory.orders.Length > 1)
                 {
                     Console.WriteLine("Open orders are still active...");
                 }
