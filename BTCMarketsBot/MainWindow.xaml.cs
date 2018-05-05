@@ -113,11 +113,11 @@ namespace BTCMarketsBot
                     decimal.TryParse(txtVolume1.Text, out buyVolume);
 
                     TradingData tradingData = TradingHelper.GetTradingData(BTCMarketsHelper.MarketTickData, Bot.Settings.ProfitMarginSplit, buyVolume);
-                    txtPrice1.Text = tradingData.BuyPrice.ToDecimalString(8);
-                    txtVolume2.Text = tradingData.SellVolume.ToDecimalString(8);
-                    txtPrice2.Text = tradingData.SellPrice.ToDecimalString(8);
+                    txtPrice1.Text = tradingData.BuyPrice.ToString();
+                    txtVolume2.Text = tradingData.SellVolume.ToString();
+                    txtPrice2.Text = tradingData.SellPrice.ToString();
 
-                    lblSpendTotal.Text = tradingData.SpendTotal.ToDecimalString(2);
+                    lblSpendTotal.Text = tradingData.SpendTotal.ToString();
                 }
 
                 UpdateTitle();

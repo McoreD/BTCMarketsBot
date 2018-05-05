@@ -37,7 +37,7 @@ namespace BTCmBotConsole
 
             // configure timer - random between 30 and 60 seconds
 
-            marketTickTimer.Interval = rnd.Next(60, 120) * 1000;
+            marketTickTimer.Interval = rnd.Next(30, 60) * 1000;
             marketTickTimer.Elapsed += MarketTickTimer_Tick;
             marketTickTimer.Start();
 
@@ -66,7 +66,7 @@ namespace BTCmBotConsole
 
             if (OpenOrdersHistory.success && OpenOrdersHistory.orders != null)
             {
-                if (OpenOrdersHistory.orders.Length > 0)
+                if (OpenOrdersHistory.orders.Length > 1)
                 {
                     Console.WriteLine("Open orders are still active...");
                 }
@@ -77,6 +77,16 @@ namespace BTCmBotConsole
 
                     // get trading data
                     TradingData tradingData = TradingHelper.GetTradingData(marketData, splitProfitMargin: true);
+
+                    Console.WriteLine($"Best Bid (Buy) {marketData.bestbid} | Best Ask (Sell): {tradingData.BuyPrice}");
+                    StatisticsHelper.AddBestBid(marketData.bestbid);
+
+                    Console.WriteLine($"Best Ask (Sell): {marketData.bestAsk} | Sell Target: {tradingData.SellPrice}");
+                    StatisticsHelper.AddBestAsk(marketData.bestAsk);
+
+                    Console.WriteLine($"SD BestAsk: {StatisticsHelper.GetSDBestAsk.ToDecimalString(8)}");
+                    Console.WriteLine($"Buy Price (2SD Lowerbound): {StatisticsHelper.Get2SDBestBid}");
+                    Console.WriteLine($"Sell Price (2SD Upperbound): {StatisticsHelper.Get2SDBestAsk}");
 
                     // create orders
                     if (tradingData.IsProfitableBuy)
